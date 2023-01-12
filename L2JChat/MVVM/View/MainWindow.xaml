@@ -1,0 +1,624 @@
+﻿<Window x:Class="L2JChat.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:L2JChat" xmlns:viewmodel="clr-namespace:L2JChat.MVVM.ViewModel" xmlns:i="http://schemas.microsoft.com/xaml/behaviors" xmlns:i1="http://schemas.microsoft.com/xaml/behaviors"
+        mc:Ignorable="d"
+        WindowStyle="None"
+        Background="Transparent"
+        AllowsTransparency="True" 
+        ResizeMode="CanResize" 
+        Title="MainWindow" 
+        x:Name="Main" 
+        Height="100" 
+        Width="348" 
+        MinHeight="210" 
+        MinWidth="348" 
+        WindowStartupLocation="CenterScreen" 
+        KeyUp="SatusKeyUpHandler" 
+        Deactivated="Window_Deactivated">
+
+    <WindowChrome.WindowChrome>
+        <WindowChrome     
+        CaptionHeight="1"  
+        CornerRadius ="0"
+        ResizeBorderThickness="7"         
+        GlassFrameThickness="0">
+        </WindowChrome>
+    </WindowChrome.WindowChrome>
+
+    <Window.DataContext>
+        <viewmodel:MainViewModel/>
+    </Window.DataContext>
+
+    <Window.Resources>
+        <local:BoolToContentConverter x:Key="BoolToContentConverter" TrueContent="Visible" FalseContent="Collapsed"/>
+        <local:EmptyOrNullStringToVisibilityConverter x:Key="EmptyOrNullStringToVisibilityConverter"/>
+    </Window.Resources>
+
+
+
+    <Grid>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="18"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="44"/>
+        </Grid.RowDefinitions>
+
+        <!--Gradient Top Bar-->
+        <Border Grid.Row="0">
+            <Border.Background>
+                <LinearGradientBrush Opacity=".7" StartPoint="0,0" EndPoint="0,1">
+                    <GradientStop Color="#3d3c3a" Offset=".0"/>
+                    <GradientStop Color="#2a2926" Offset=".2"/>
+                    <GradientStop Color="#0d0d0c" Offset="1"/>
+                </LinearGradientBrush>
+            </Border.Background>
+        </Border>
+
+        <!--Background Main Chat Area-->
+        <Canvas Grid.Row="1" 
+                Opacity=".7" 
+                Background="#0d0d0c">
+        </Canvas>
+
+        <!--Border for Top Box-->
+        <Border BorderBrush="#38332c" 
+                BorderThickness=".5" 
+                Grid.Row="0"
+                Grid.RowSpan="2">
+        </Border>
+
+        <!--Bottom Grid-->
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="6"/>
+            </Grid.ColumnDefinitions>
+            <Canvas Opacity=".7" Grid.Column="0" Background="#0d0d0c"/>
+            <Canvas Opacity=".7" Grid.Column="1" Background="Black"/>
+        </Grid>
+
+        <!--Border for Bottom Box-->
+        <Border BorderBrush="#38332c" 
+                BorderThickness=".5" 
+                Grid.Row="2" 
+                Margin="0,-1,0,0"/>
+        
+        <!--Label for Chat Tab-->
+        <Label Content="チャット" 
+               Grid.Row="2" 
+               HorizontalAlignment="Left" 
+               VerticalAlignment="Top" 
+               Foreground="White" 
+               FontFamily="Meiryo UI" 
+               Margin="36,-3,0,0" 
+               FontSize="11" 
+               FontWeight="Bold"/>
+
+        <!--Chatting Tab Image-->
+        <Image Source="../../Images/ChatTab.png" 
+               Grid.Row="2" 
+               Stretch="None" 
+               HorizontalAlignment="Left" 
+               VerticalAlignment="Top" 
+               Margin="26,0,0,0" 
+               MouseDown="Button_MouseDown">
+            <Image.ContextMenu>
+                <ContextMenu Foreground="Lime" 
+                             Background="#302C2B">
+                    <MenuItem Header="Disable Topmost" 
+                              IsCheckable="True"
+                                  Name="tCMTopmost" 
+                                  Click="ToggleTopmost">
+                    </MenuItem>
+                    <MenuItem Header="Lock Window" 
+                              IsCheckable="True"
+                                  Name="tCMLock" 
+                                  Command="{Binding LockWindowCommand}">
+                    </MenuItem>
+                    <MenuItem Header="Logout" 
+                                  Name="tCMLogout" 
+                              Command="{Binding UserLogoutCommand}">
+                    </MenuItem>
+                    <MenuItem Header="Disconnect" 
+                                  Name="tCMDisconnect" 
+                                  Command="{Binding UserDisconnectCommand}">
+                    </MenuItem>
+                    <MenuItem Header="Exit" 
+                                  Name="tCMExit" 
+                                  Click="ClickExit">
+                    </MenuItem>
+
+                </ContextMenu>
+            </Image.ContextMenu>
+        </Image>
+
+       <!--Main Input Textbox-->
+        <TextBox AcceptsReturn="True" Text="{Binding Message, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                 x:Name="tb1" 
+                 Background="Black" 
+                 MaxLength="150"
+                 Grid.Row="2" Height="18" 
+                 VerticalAlignment="Bottom" 
+                 Margin="26,0,10,4" 
+                 BorderBrush="#38332c" 
+                 Foreground="White" FontSize="13" 
+                 Padding="16,0,0,0" 
+                 IsEnabled="{Binding CanChat, UpdateSourceTrigger=PropertyChanged}"
+                 FontFamily="Meiryo UI" IsEnabledChanged="FocusChatBox">
+
+            <TextBox.InputBindings>
+                <KeyBinding 
+                    Key="Enter"
+                    Command="{Binding SendMessageCommand}"/>
+            </TextBox.InputBindings>
+        </TextBox>
+
+        <!--IME Button-->
+        <Grid Width="14" Height="14" Margin="28,0,0,5" HorizontalAlignment="Left" VerticalAlignment="Bottom" Grid.Row="2">
+            <Image x:Name="imeImage" Stretch="Fill">
+                <Image.Style>
+                    <Style TargetType="{x:Type Image}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ImeFeedback}" Value="false">
+                                <Setter Property="Source" Value="../../Images/ENime.png"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding ImeFeedback}" Value="true">
+                                <Setter Property="Source" Value="../../Images/JPime.png"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Image.Style>
+            </Image>
+        </Grid>
+        
+        <!--Flow Document-->
+        <FlowDocumentScrollViewer
+                                  Grid.Row="1" 
+                                  Name="fDoc" 
+                                  ContextMenuService.IsEnabled="False" 
+                                  HorizontalScrollBarVisibility="Hidden" 
+                                  IsInactiveSelectionHighlightEnabled="True" 
+                                  VerticalScrollBarVisibility="Visible">
+            <FlowDocument PagePadding="10,0,0,8" 
+                          Name="fDocu" 
+                          ContextMenuService.IsEnabled="False" 
+                          PreviewMouseRightButtonDown="fDocRightClick">
+                <i:Interaction.Behaviors>
+                    <local:ChatFlowDocumentBehavior ChatMessages="{Binding ChatMessages}">
+                        <local:ChatFlowDocumentBehavior.ItemTemplate>
+                            <DataTemplate>
+                                <local:Fragment>
+                                    <Paragraph Margin="0" 
+                                               Background="Transparent" 
+                                               FontFamily="Meiryo UI" 
+                                               FontSize="11" 
+                                               Loaded="ParagraphLoaded"/>
+                                </local:Fragment>
+                            </DataTemplate>
+                        </local:ChatFlowDocumentBehavior.ItemTemplate>
+                    </local:ChatFlowDocumentBehavior>
+                </i:Interaction.Behaviors>
+
+
+                <FlowDocument.ContextMenu>
+                    <ContextMenu Name="fCM" 
+                                 Background="#302C2B" 
+                                 Foreground="White">
+                        <MenuItem Header="コピー (Copy)" 
+                                  Name="fCMCopy" 
+                                  Click="ClickCopy">
+                        </MenuItem>
+                        <MenuItem Header="Translate with Google"
+                                  Name="fCMGoogleT" 
+                                  Click="ClickGoogleT">
+                        </MenuItem>
+                        <MenuItem Header="Search on Jisho.org"
+                                  Name="fCMJisho" 
+                                  Click="ClickJisho">
+                        </MenuItem>
+                        <MenuItem Header="グーグルで翻訳"
+                                  Name="fCMJPGoogleT" 
+                                  Click="ClickJPGoogleT">
+                        </MenuItem>
+                        <MenuItem Header="Weblioで検索"
+                                  Name="fCMWeblio" 
+                                  Click="ClickWeblio">
+                        </MenuItem>
+                        <MenuItem Header="L2データベースで検索"
+                                  Name="fCML2Jru" 
+                                  Click="ClickL2Jru">
+                        </MenuItem>
+
+                    </ContextMenu>
+                </FlowDocument.ContextMenu>
+            </FlowDocument>
+        </FlowDocumentScrollViewer>
+
+        <!--Login Controls-->
+        <Grid Grid.Row="1"
+              d:IsHidden="True"
+              x:Name="screenLogin"
+              Visibility="{Binding Login, Converter={StaticResource BoolToContentConverter}}">
+            
+            <StackPanel HorizontalAlignment="Center"
+                        VerticalAlignment="Center" 
+                        Width="150">
+
+                <TextBox Margin="0,0,0,0" 
+                         x:Name="txtUserName" 
+                         Text="{Binding Username, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                         Background="Silver" IsVisibleChanged="FocusOnVisible">
+                </TextBox>
+
+                <PasswordBox Name="pwbPassword" 
+                                Margin="0,6,0,0" 
+                                PasswordChanged="pwbPassword_PasswordChanged"
+                                Background="Silver" IsVisibleChanged="PWBVisibilityChanged">
+
+                    <PasswordBox.InputBindings>
+                        <KeyBinding 
+                            Key="Enter" 
+                            Command="{Binding LoginAttemptCommand}"/>
+                    </PasswordBox.InputBindings>
+                </PasswordBox>
+                
+                <StackPanel Orientation="Horizontal">
+                    
+                    <CheckBox HorizontalAlignment="Center" 
+                            Margin="0,3,0,0" 
+                            IsChecked="{Binding SaveLogin,Mode=TwoWay}" Unchecked="DisableAutoLogin"/>
+                    
+                    <TextBlock
+                            FontSize="12"
+                            Margin="3,0,0,0" 
+                            Foreground="White"
+                            VerticalAlignment="Bottom" 
+                            Text="次回から自動的にログイン"  />
+                    
+                </StackPanel>
+
+                
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    
+                    <Button
+                        Height="20" 
+                    FontFamily="Meiryo UI"
+                    Content="戻る" 
+                    Width="50" 
+                    FontSize="12" 
+                    Command="{Binding BackLoginCommand}"
+                    Margin="0,9,6,0"/>
+                    
+                    <Button
+                        Height="20" 
+                    FontFamily="Meiryo UI"
+                    Command="{Binding LoginAttemptCommand}"
+                    Content="ログイン" 
+                    Width="50" 
+                    FontSize="12" 
+                    Margin="0,9,0,0"/>
+                    
+                </StackPanel>
+
+            </StackPanel>
+            
+            <!--Login Text-->
+            <Canvas HorizontalAlignment="Center" 
+                    VerticalAlignment="Center">
+
+                <TextBlock FontSize="14" 
+                        Name="tbUsername" 
+                        Text="表示名" 
+                        Foreground="Gray" 
+                        IsHitTestVisible="False" 
+                        Margin="-71,-45,0,0" 
+                        VerticalAlignment="Top" 
+                        Grid.Column="1" 
+                        Visibility="{Binding ElementName=txtUserName, Path=Text, Converter={StaticResource EmptyOrNullStringToVisibilityConverter}}"
+                        FontFamily="Meiryo UI">
+                </TextBlock>
+            
+                <TextBlock Name="tbPassword" 
+                            FontSize="14"
+                            Foreground="Gray" 
+                            Margin="-71,-21,0,78" 
+                            VerticalAlignment="Bottom" 
+                            Text="パスワード" 
+                            IsHitTestVisible="False" />
+            
+
+            </Canvas>
+            
+        </Grid>
+
+        <!--Registration Controls-->
+        <Grid Grid.Row="1"
+              d:IsHidden="False"
+              x:Name="screenRegister"
+              Visibility="{Binding Register, Converter={StaticResource BoolToContentConverter}}">
+            <StackPanel 
+                            VerticalAlignment="Center" 
+                            Width="150">
+
+                <TextBox Margin="0,0,0,0" 
+                            Name="txtRegisterUserName" 
+                            Text="{Binding RegisterUsername, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                            Background="Silver" IsVisibleChanged="FocusOnVisible"/>
+                
+                <StackPanel Orientation="Horizontal"
+                            Margin="0,6,0,0">
+                    <PasswordBox Name="pwbRegisterPassword" 
+                                    Width="72"
+                                    Margin="0,0,6,0"
+                                    PasswordChanged="pwbRegisterPassword_PasswordChanged"
+                                    Background="Silver" IsVisibleChanged="RPWBVisibilityChanged"/>
+                    <PasswordBox Name="pwb2RegisterPassword" 
+                                 PasswordChanged="pwb2RegisterPassword_PasswordChanged"
+                                 Width="72"
+                                    Background="Silver" IsVisibleChanged="RPWB2VisiblityChanged"/>
+                </StackPanel>
+
+                <TextBox Margin="0,6,0,0" 
+                            Name="txtRegisterMail" 
+                            Text="{Binding RegisterMail, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                            Background="Silver">
+                    <TextBox.InputBindings>
+                        <KeyBinding 
+                            Key="Enter" 
+                            Command="{Binding RegisterAttemptCommand}"/>
+                    </TextBox.InputBindings>
+                </TextBox>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,5">
+                    <Button
+                        Height="20" 
+                    FontFamily="Meiryo UI"
+                    Content="戻る" 
+                    Width="50" 
+                    FontSize="12" 
+                    Margin="0,6,5,0"
+                    Command="{Binding BackRegisterCommand}"/>
+                    <Button
+                        Height="20" 
+                    FontFamily="Meiryo UI"
+                    Content="登録" 
+                    Command="{Binding RegisterAttemptCommand}"
+                    Width="50" 
+                    FontSize="12" 
+                    Margin="0,6,0,0"/>
+                </StackPanel>
+            </StackPanel>
+
+
+
+
+            <!--Register Text-->
+            <Canvas HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Width="150">
+
+                <TextBlock FontSize="14" 
+                        Name="tbRegisterUserName" 
+                        Text="表示名" 
+                        Foreground="Gray" 
+                        IsHitTestVisible="False" 
+                        Margin="3,-48,0,0" 
+                        Visibility="{Binding ElementName=txtRegisterUserName, Path=Text, Converter={StaticResource EmptyOrNullStringToVisibilityConverter}}"
+                        HorizontalAlignment="Left"
+                        FontFamily="Meiryo UI"/>
+                <TextBlock Name="tbRegisterPassword" 
+                            FontSize="14"
+                            Foreground="Gray" 
+                            Margin="3,-24,0,0" 
+                            Text="パスワード" 
+                            IsHitTestVisible="False" />
+                <TextBlock Name="tb2RegisterPassword" 
+                            FontSize="14"
+                            Foreground="Gray" 
+                            Margin="81,-24,0,78" 
+                            Text="確認" 
+                            IsHitTestVisible="False" />
+                <TextBlock Name="tbRegisterMail" 
+                            FontSize="14"
+                            Visibility="{Binding ElementName=txtRegisterMail, Path=Text, Converter={StaticResource EmptyOrNullStringToVisibilityConverter}}"
+                            Foreground="Gray" 
+                            Margin="3,0,0,0" 
+                            Text="メール" 
+                            IsHitTestVisible="False" />
+            </Canvas>
+            
+
+
+        </Grid>
+
+        <!--Disconnected Controls -->
+        <Grid 
+              d:IsHidden="True"
+              Grid.Row="1" Width="195" 
+              Visibility="{Binding Disconnected, Converter={StaticResource BoolToContentConverter}}"
+              x:Name="screenDisconnected">
+
+            <StackPanel VerticalAlignment="Center">
+
+                <StackPanel Orientation="Horizontal"
+                            Width="200">
+
+                    <TextBox Name="txtServerIP"
+                             Text="{Binding ServerIP, UpdateSourceTrigger=PropertyChanged}"
+                             Background="Silver"
+                             Width="125"
+                             BorderBrush="Black" IsVisibleChanged="FocusOnVisible"/>
+
+                    <TextBox Name="txtPort" 
+                             Text="{Binding ServerPort, UpdateSourceTrigger=PropertyChanged}"
+                             Width="60"
+                             Margin="5,0,0,0"
+                             BorderBrush="Black"
+                             Background="Silver" />
+
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal">
+
+                    <PasswordBox Name="pwbServerPassword" 
+                                 BorderBrush="Black"
+                                 PasswordChanged="pwbServerPassword_PasswordChanged"
+                                 Margin="0,5,0,6"
+                                 Width="90"
+                                 Background="Silver" IsVisibleChanged="ServerPWBVisibilityChanged">
+
+                        <PasswordBox.InputBindings>
+                            <KeyBinding 
+                            Key="Enter" 
+                            Command="{Binding ConnectAttemptCommand}"/>
+                        </PasswordBox.InputBindings>
+                        
+                    </PasswordBox>
+
+
+                    <Button Height="24"
+                            BorderBrush="Black"
+                            FontFamily="Meiryo UI"
+                            Width="60" 
+                            Command="{Binding ConnectAttemptCommand}"
+                            FontSize="13"
+                            Margin="40,2,0,0">
+
+                        <TextBlock Text="接続" Margin="0,0,0,2"/>
+                    </Button>
+
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" 
+                            Margin="0,2,0,0">
+                    <CheckBox IsChecked="{Binding SaveServer,Mode=TwoWay}" Unchecked="DisableAutoConnect"/>
+                    <TextBlock Text="次回から自動的に接続"
+                               Foreground="White"
+                               FontFamily="Meiryo UI"
+                               FontSize="12"
+                               Margin="5,0,0,0">
+
+                    </TextBlock>
+
+                </StackPanel>
+
+            </StackPanel>
+
+            <!--Disconnected Text-->
+            <Canvas VerticalAlignment="Center">
+                
+                <TextBlock FontSize="13" 
+                        Name="tbServerIP" 
+                        Text="サバアドレス" 
+                        Foreground="Gray" 
+                        IsHitTestVisible="False" 
+                        Margin="2,-32,0,0" 
+                        VerticalAlignment="Top" 
+                        Grid.Column="1" 
+                        Visibility="{Binding ElementName=txtServerIP, Path=Text, Converter={StaticResource EmptyOrNullStringToVisibilityConverter}}"
+                        FontFamily="Meiryo UI"/>
+
+                <TextBlock Name="tbServerPassword" 
+                            FontSize="13" 
+                            Grid.Column="1" 
+                            Foreground="Gray" 
+                            Margin="2,-9,0,0" 
+                            VerticalAlignment="Bottom" 
+                            Text="パスワード" 
+                            IsHitTestVisible="False" />
+
+                <TextBlock Name="tbPort" 
+                           FontSize="12"
+                           Grid.Column="1" 
+                           Foreground="Gray" 
+                           Visibility="{Binding ElementName=txtPort, Path=Text, Converter={StaticResource EmptyOrNullStringToVisibilityConverter}}"
+                           Margin="133,-31,0,0" 
+                           VerticalAlignment="Top" 
+                           Text="ポート"
+                           IsHitTestVisible="False" />
+            </Canvas>
+        </Grid>
+        
+        <!--Main Screen Controls-->
+        <StackPanel Grid.Row="1"
+              d:IsHidden="True" 
+              x:Name="screenConnected"
+              VerticalAlignment="Center"
+              Visibility="{Binding Connected, Converter={StaticResource BoolToContentConverter}}">
+            <TextBlock Text="Welcome to L2JChat!"
+                       Foreground="White"
+                       HorizontalAlignment="Center"
+                       Margin="0,0,0,20"
+                       FontSize="16"
+                       FontWeight="Bold"
+                       FontFamily="Meiryo UI"/>
+            <Button Height="29"
+                    Width="70"
+                    Command="{Binding ToLoginCommand}"
+                    BorderBrush="Black" IsVisibleChanged="FocusLoginButton">
+                <TextBlock
+                    Text="ログイン"
+                    FontSize="16"
+                    FontFamily="Meiryo UI"
+                    Margin="0,-1,0,0"/>
+            </Button>
+
+            <Button Height="29"
+                    Width="70"
+                    BorderBrush="Black"
+                    Command="{Binding ToRegisterCommand}"
+                    Margin="0,5,0,15">
+                <TextBlock
+                    Text="登録"
+                    FontFamily="Meiryo UI"
+                    FontSize="18"
+                    Margin="0,-1,0,0"/>
+            </Button>
+
+        </StackPanel>
+
+        <!-- Error Textblock -->
+        <TextBlock TextAlignment="Center" 
+                   Grid.Row="1"
+                   VerticalAlignment="Bottom"
+                   HorizontalAlignment="Center"
+                   FontSize="10" 
+                   TextWrapping="WrapWithOverflow"
+                   Text="{Binding ServerMessage, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" 
+                   Margin="0,0,0,2"
+                   Foreground="{Binding ServerMessageColor}">
+        </TextBlock>
+        
+        <!-- UserCount Block -->
+        <Grid Grid.Row="2" 
+                   Visibility="{Binding CanChat, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BoolToContentConverter}}"
+                   Width="14" 
+                   Height="14" 
+                   Margin="6,0,0,6" 
+                   VerticalAlignment="Bottom"
+                   HorizontalAlignment="Left" ToolTipService.InitialShowDelay="500" ToolTipService.BetweenShowDelay="500">
+            <Grid.ToolTip>
+                <ToolTip Content="{Binding UsersString, UpdateSourceTrigger=PropertyChanged}"
+                         Background="#0d0d0c" 
+                         Foreground="White"/>
+            </Grid.ToolTip>
+            <Border Background="Black" BorderBrush="White" BorderThickness=".5">
+
+            </Border>
+            <TextBlock Text="{Binding UserCount, UpdateSourceTrigger=PropertyChanged}" 
+                       FontSize="10"
+                       VerticalAlignment="Center" 
+                       Foreground="White"
+                       HorizontalAlignment="Center"/>
+        </Grid>
+
+
+        
+    </Grid>
+
+
+
+</Window>
