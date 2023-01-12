@@ -189,7 +189,7 @@ namespace L2JChat.Net
 
         public void SendMessageToServer(string message)
         {
-            if (string.IsNullOrEmpty(message))
+            if (!string.IsNullOrEmpty(message))
             {
                 var messagePacket = new PacketBuilder();
                 messagePacket.WriteOpCode(5);
