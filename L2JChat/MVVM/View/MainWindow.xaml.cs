@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,6 +15,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
+using System.Security.Principal;
 
 namespace L2JChat
 {
@@ -36,6 +38,7 @@ namespace L2JChat
                 Environment.Exit(0);
             }
             InitializeComponent();
+            AdminRelauncher();
             IsTopmost = true;
             Topmost = true;
             imeImage.DataContext = this;
@@ -490,6 +493,43 @@ namespace L2JChat
             if (((Button)sender).IsVisible)
             {
                 ((Button)sender).Focus();
+            }
+        }
+
+        private static bool IsRunAsAdmin()
+        {
+            try
+            {
+                WindowsIdentity id = WindowsIdentity.GetCurrent();
+                WindowsPrincipal principal = new WindowsPrincipal(id);
+                return principal.IsInRole(WindowsBuiltInRole.Administrator);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        private static void AdminRelauncher()
+        {
+            if (!IsRunAsAdmin())
+            {
+                ProcessStartInfo proc = new ProcessStartInfo();
+                proc.UseShellExecute = true;
+                proc.WorkingDirectory = Environment.CurrentDirectory;
+                proc.FileName = Assembly.GetEntryAssembly().Location.Replace(".dll", ".exe");
+
+                proc.Verb = "runas";
+
+                try
+                {
+                    Process.Start(proc);
+                    Environment.Exit(0);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("This program must be run as an administrator! \n\n" + ex.ToString());
+                }
             }
         }
     }
