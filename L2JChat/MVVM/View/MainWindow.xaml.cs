@@ -31,6 +31,7 @@ namespace L2JChat
 
         public MainWindow()
         {
+            AdminRelauncher();
             bool aIsNewInstance = false;
             myMutex = new Mutex(true, "L2JChatWindow", out aIsNewInstance);
             if (!aIsNewInstance)
@@ -38,7 +39,7 @@ namespace L2JChat
                 Environment.Exit(0);
             }
             InitializeComponent();
-            AdminRelauncher();
+            
             IsTopmost = true;
             Topmost = true;
             imeImage.DataContext = this;
