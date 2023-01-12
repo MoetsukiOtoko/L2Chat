@@ -189,12 +189,15 @@ namespace L2JChat.Net
 
         public void SendMessageToServer(string message)
         {
-            var messagePacket = new PacketBuilder();
-            messagePacket.WriteOpCode(5);
-            messagePacket.WriteJPMessage(message);
-            
-            _client.Client.Send(messagePacket.GetPacketBytes());
-            msgSentEvent?.Invoke();
+            if (string.IsNullOrEmpty(message))
+            {
+                var messagePacket = new PacketBuilder();
+                messagePacket.WriteOpCode(5);
+                messagePacket.WriteJPMessage(message);
+
+                _client.Client.Send(messagePacket.GetPacketBytes());
+                msgSentEvent?.Invoke(); 
+            }
         }
 
         public void DisconnectServer()
