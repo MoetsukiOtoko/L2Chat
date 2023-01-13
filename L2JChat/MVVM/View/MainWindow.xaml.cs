@@ -16,7 +16,6 @@ using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Security.Principal;
-
 namespace L2JChat
 {
 
@@ -26,7 +25,6 @@ namespace L2JChat
         private bool IsTopmost;
         private Boolean AutoScroll = true;
         Mutex myMutex;
-
 
 
         public MainWindow()
@@ -43,6 +41,7 @@ namespace L2JChat
             IsTopmost = true;
             Topmost = true;
             imeImage.DataContext = this;
+            verTB.Text = "L2JChat バージョン " + Assembly.GetExecutingAssembly().GetName().Version.ToString();
             SetupLogFile();
             SetupUnhandledExceptionHandling();
             HotkeyManager.Current.AddOrReplace("FocusChat", Key.Enter, ModifierKeys.Shift, FocusWindow);
@@ -531,6 +530,19 @@ namespace L2JChat
                 {
                     Console.WriteLine("This program must be run as an administrator! \n\n" + ex.ToString());
                 }
+            }
+        }
+
+        private void DCControlsHidden(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            var vm = (MainViewModel)DataContext;
+            if (vm.Disconnected == false)
+            {
+                verTB.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                verTB.Visibility = Visibility.Visible;
             }
         }
     }

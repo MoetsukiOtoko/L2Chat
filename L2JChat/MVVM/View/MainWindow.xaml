@@ -439,7 +439,7 @@
               d:IsHidden="True"
               Grid.Row="1" Width="195" 
               Visibility="{Binding Disconnected, Converter={StaticResource BoolToContentConverter}}"
-              x:Name="screenDisconnected">
+              x:Name="screenDisconnected" IsVisibleChanged="DCControlsHidden">
 
             <StackPanel VerticalAlignment="Center">
 
@@ -614,9 +614,18 @@
                        Foreground="White"
                        HorizontalAlignment="Center"/>
         </Grid>
+        <TextBlock x:Name="verTB" 
+                   Grid.Row="2" 
+                   HorizontalAlignment="Left" 
+                   VerticalAlignment="Top" 
+                   Foreground="LightGray"
+                   Text="L2JChat バージョン"
+                   Margin="93,4,0,0"
+                   FontSize="10">
+
+        </TextBlock>
 
 
-        
     </Grid>
 
 
