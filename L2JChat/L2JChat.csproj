@@ -5,9 +5,9 @@
     <TargetFramework>net6.0-windows</TargetFramework>
     <Nullable>disable</Nullable>
     <UseWPF>true</UseWPF>
-    <AssemblyVersion>2023.1.13.1533</AssemblyVersion>
+    <AssemblyVersion>2023.1.13.1607</AssemblyVersion>
     <PackageIcon>ChatIcon_2.png</PackageIcon>
-    <ApplicationIcon>ChatIcon_2.ico</ApplicationIcon>
+    <ApplicationIcon>ChatIcon_4.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="ChatIcon_2.ico" />
+    <Content Include="ChatIcon_4.ico" />
   </ItemGroup>
 
   <ItemGroup>
