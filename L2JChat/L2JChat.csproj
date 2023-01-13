@@ -5,8 +5,9 @@
     <TargetFramework>net6.0-windows</TargetFramework>
     <Nullable>disable</Nullable>
     <UseWPF>true</UseWPF>
-    <AssemblyVersion>2023.1.13.1507</AssemblyVersion>
-    <PackageIcon>ChatIcon_1.png</PackageIcon>
+    <AssemblyVersion>2023.1.13.1533</AssemblyVersion>
+    <PackageIcon>ChatIcon_2.png</PackageIcon>
+    <ApplicationIcon>ChatIcon_2.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,10 +18,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\..\..\..\OneDrive\Pictures\ChatIcon_1.png">
+    <Content Include="ChatIcon_2.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="..\..\..\..\OneDrive\Pictures\ChatIcon_2.png">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
-    </None>
+    </Resource>
   </ItemGroup>
 
   <ItemGroup>
@@ -37,6 +42,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="EmptyOrNullStringToVisibilityConverter.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
     <Compile Update="Properties\Settings.Designer.cs">
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <AutoGen>True</AutoGen>
