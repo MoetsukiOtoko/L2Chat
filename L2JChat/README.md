@@ -5,20 +5,16 @@ This application is meant to supplement non-Japanese client versions of L2 - all
 
 ## Requirements 
 - Windows
-
 - .Net 6 Framework (will be installed automatically during setup)
 
 ## Installation
-Use this [setup.exe](https://github.com/MoetsukiOtoko/L2JChat/blob/master/published/setup.exe?raw=true) located within this repository.
+Use this [setup.exe](https://github.com/MoetsukiOtoko/L2JChat/blob/master/published/setup.exe?raw=true) located within this repository.  
 The application is not certified with Microsoft SmartScreen so it will produce this warning. 
 
-![](MicrosoftSmartScreenWarning.png )
+<img src="MicrosoftSmartScreenWarning.png" width="300" height="300"> <img src="MicrosoftSmartScreenWarning2.png" width="300" height="300">
 
-![](MicrosoftSmartScreenWarning2.png)
-
-<img src="MicrosoftSmartScreenWarning2.png" width="300" height="300">
-
-Please feel free to run it, as well as all installed files, through https://www.virustotal.com/gui/home/upload. Or simply look through the source code yourself as it is all included in this repository.
+Please feel free to run it, as well as all installed files, through https://www.virustotal.com/gui/home/upload.  
+Or simply look through the source code yourself as it is all included in this repository.
 
 ## Usage
 
@@ -26,7 +22,9 @@ Please feel free to run it, as well as all installed files, through https://www.
 Connection information can be found on the discord: https://discord.gg/JvUzYnph62.
 
 ### Updating
-This application is deployed with ClickOnce. When the application is launched, if there is an update available, the user will be prompted to update automatically. All source code for updates will be available in this repository. 
+This application is deployed with ClickOnce.  
+When the application is launched, if there is an update available, the user will be prompted to update automatically.  
+All source code for updates will be available in this repository. 
 
 ## Moving forward
 Please report bugs or offer feedback via the discord. I will make a roadmap for future updates.
