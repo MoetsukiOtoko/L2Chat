@@ -585,7 +585,7 @@
                    Grid.Row="1"
                    VerticalAlignment="Bottom"
                    HorizontalAlignment="Center"
-                   FontSize="10" 
+                   FontSize="11" 
                    TextWrapping="WrapWithOverflow"
                    Text="{Binding ServerMessage, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" 
                    Margin="0,0,0,2"

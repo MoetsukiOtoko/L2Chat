@@ -336,7 +336,7 @@ namespace L2JChat.MVVM.ViewModel
             var dUsername = _server.PacketReader.ReadMessage();
             var user = Users.Where(x => x.Username == dUsername).FirstOrDefault();
             Application.Current.Dispatcher.Invoke(() => Users.Remove(user));
-            ChatMessage currentMsg = new ChatMessage($"{user.Username} disconnected from the server!", "Disconnected");
+            ChatMessage currentMsg = new ChatMessage($"{user.Username}さんはサーバーから切断されました。", "Disconnected");
             Application.Current.Dispatcher.Invoke(() => ChatMessages.Add(currentMsg));
             UpdateUsersInfo();
         }
@@ -370,7 +370,7 @@ namespace L2JChat.MVVM.ViewModel
             if (!Users.Any(x => x.UID == user.UID))
             {
                 Application.Current.Dispatcher.Invoke(() => Users.Add(user));
-                ChatMessage currentMsg = new ChatMessage($"{user.Username} connected to the server!", "Connected");
+                ChatMessage currentMsg = new ChatMessage($"{user.Username}さんはサーバーに接続しました！", "Connected");
                 Application.Current.Dispatcher.Invoke(() => ChatMessages.Add(currentMsg));
             }
             
@@ -392,7 +392,7 @@ namespace L2JChat.MVVM.ViewModel
                 Application.Current.Dispatcher.Invoke(() => Users.Add(user));
                 if (user.Username == Username)
                 {
-                    ChatMessage currentMsg = new ChatMessage("You've connected to the server!", "Connected");
+                    ChatMessage currentMsg = new ChatMessage("サーバーに接続しました！", "Connected");
                     Application.Current.Dispatcher.Invoke(() => ChatMessages.Add(currentMsg));
                 }
             }
@@ -449,7 +449,7 @@ namespace L2JChat.MVVM.ViewModel
 
         public void LoginError()
         {
-            ServerMessage = "Incorrect Username or Password.";
+            ServerMessage = "ユーザーネームまたはパスワードが違います。";
         }
 
         public void ConnectSuccess()
@@ -501,7 +501,7 @@ namespace L2JChat.MVVM.ViewModel
         {
             var msg = _server.PacketReader.ReadMessage();
             ServerMessageColor = "red";
-            ServerMessage = msg;
+            ServerMessage = "ユーザー名は既に使われています。";
         }
 
         public void RegisterSuccess()
@@ -528,26 +528,26 @@ namespace L2JChat.MVVM.ViewModel
         public void PasswordMismatch()
         {
             ServerMessageColor = "red";
-            ServerMessage = "Passwords do not match.";
+            ServerMessage = "パスワードが一致していません。";
 
         }
 
         public void InvalidUsername()
         {
             ServerMessageColor = "red";
-            ServerMessage = "Invalid username. Please ensure username is between 4 and 16 digits and contains only english characters or numbers.";
+            ServerMessage = "無効なユーザー名。ユーザー名が4～16桁で、英字または数字のみが含まれていることを確認してください。";
         }
 
         public void InvalidPassword()
         {
             ServerMessageColor = "red";
-            ServerMessage = "Invalid password. Please ensure password is between 4 and 16 digits and contains only english characters or numbers.";
+            ServerMessage = "無効なパスワード。パスワードは4～16桁で、英字または数字のみが含まれていることを確認してください。";
         }
 
         public void InvalidMail()
         {
             ServerMessageColor = "red";
-            ServerMessage = "Invalid e-mail. Please ensure your e-mail is correctly formatted (e.g. example@example.com) or blank (an e-mail is not required).";
+            ServerMessage = "電子メールが無効です。電子メールが正しい形式(例:example@example.com)または空欄(電子メールは不要)であることを確認してください。";
         }
 
         public void BackToConnectScreen()
@@ -638,7 +638,7 @@ namespace L2JChat.MVVM.ViewModel
         {
             BackToLoginScreen();
             ServerMessageColor = "red";
-            ServerMessage = "Disconnected: Duplicate User logged in at another location.";
+            ServerMessage = "切断されました:重複したユーザーが別の場所でログインしました。";
         }
 
         private void SafeClearChat()
@@ -652,9 +652,8 @@ namespace L2JChat.MVVM.ViewModel
         private void CouldNotConnect()
         {
             ServerMessageColor = "red";
-            ServerMessage = "Could not connect. Check host address and port.";
+            ServerMessage = "接続できませんでした。ホストアドレスとポートを確認してください。";
 
-            Debug.WriteLine("dog dog dog dog bark bark bark");
         }
 
         private void UpdateUsersInfo()
