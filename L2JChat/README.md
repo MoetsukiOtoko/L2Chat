@@ -16,7 +16,7 @@ The application is not certified with Microsoft SmartScreen so it will produce t
 
 ![](MicrosoftSmartScreenWarning2.png)
 
-<img src="MicrosoftSmartScreenWarning2.png" width="100" height="100">
+<img src="MicrosoftSmartScreenWarning2.png" width="300" height="300">
 
 Please feel free to run it, as well as all installed files, through https://www.virustotal.com/gui/home/upload. Or simply look through the source code yourself as it is all included in this repository.
 
